@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      LISTEN_HOST: 0.0.0.0
+      LISTEN_PORT: 8080
+    volumes:
+      - ./data:/app/data
+      - ./projects:/app/projects
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
