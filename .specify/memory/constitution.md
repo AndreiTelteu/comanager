@@ -1,50 +1,59 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: N/A → 0.1.0
+- Modified principles: None (initial adoption)
+- Added sections: Core Principles, Technology & Architecture Constraints, Development Workflow & Quality Gates, Governance
+- Removed sections: None
+- Templates requiring updates:
+  - ✅ updated: .specify/templates/plan-template.md
+  - ✅ updated: .specify/templates/spec-template.md
+  - ✅ updated: .specify/templates/tasks-template.md
+- Follow-up TODOs: TODO(RATIFICATION_DATE): original ratification date unknown
+-->
+# Comanager Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### E2E-Only Testing with Cypress
+Unit tests are forbidden. If tests are requested for a feature, implement
+Cypress end-to-end tests only and keep coverage at the user-journey level.
+Rationale: a single, consistent E2E testing strategy avoids mixed paradigms.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### SolidJS Minimal Components
+Frontend work MUST follow SolidJS best practices and avoid over-componentizing.
+Create components only when a UI element is reused across multiple routes or
+flows; otherwise keep logic within the route/page. Rationale: reduce churn and
+maintain straightforward UI structure.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Architecture Alignment
+Preserve the Go (Fiber) backend and SolidJS (Vite) SPA frontend architecture.
+API routes remain under /api, and frontend builds must output to
+internal/embed/frontend/dist so the backend can serve the SPA with an index.html
+fallback. Rationale: maintain deployable parity between dev and production.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+## Technology & Architecture Constraints
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+- Backend is Go with Fiber; do not introduce alternate server frameworks.
+- Frontend is SolidJS with Vite; avoid switching frameworks.
+- Build outputs for the SPA must land in internal/embed/frontend/dist.
+- Runtime config uses LISTEN_HOST and LISTEN_PORT environment variables.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Development Workflow & Quality Gates
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Before implementation, confirm requirements and acceptance scenarios are
+  expressed as E2E behaviors suitable for Cypress.
+- If tests are requested, write Cypress E2E tests only and keep them focused on
+  independent user stories.
+- Frontend changes must respect the minimal-component rule and SolidJS
+  best-practice patterns.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution supersedes all other development guidance.
+- Amendments MUST update this document, include a semantic version bump, and
+	update dependent templates and guidance files in .specify/templates/.
+- Reviews MUST verify compliance with the Core Principles and Workflow gates.
+- Versioning policy: MAJOR for breaking governance changes, MINOR for new
+	principles/sections, PATCH for clarifications or wording adjustments.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 0.1.0 | **Ratified**: TODO(RATIFICATION_DATE): original ratification date unknown | **Last Amended**: 2026-02-03

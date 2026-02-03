@@ -7,6 +7,8 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
+**Testing Policy**: If tests are requested, they MUST be Cypress E2E tests only.
+
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
