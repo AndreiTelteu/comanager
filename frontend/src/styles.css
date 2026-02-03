@@ -19,11 +19,20 @@
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
 }
 * {
   @apply border-gray-200 dark:border-gray-800;
 }
 body {
   @apply bg-gray-50 text-gray-950 dark:bg-gray-900 dark:text-gray-200;
+}
+
+body,
+#app {
+  min-height: 100vh;
 }

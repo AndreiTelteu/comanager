@@ -22,10 +22,10 @@ description: "Task list for kanban and chat core"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Verify backend dependencies in go.mod (add Fiber, golang-migrate, modernc.org/sqlite) in go.mod
-- [ ] T002 Verify frontend dependencies (TanStack Router, Tailwind v4) in frontend/package.json
-- [ ] T003 [P] Add migration embed scaffold in internal/embed/embed.go
-- [ ] T004 [P] Add backend config defaults for LISTEN_HOST/LISTEN_PORT in internal/server/config.go
+- [X] T001 Verify backend dependencies in go.mod (add Fiber, golang-migrate, modernc.org/sqlite) in go.mod
+- [X] T002 Verify frontend dependencies (TanStack Router, Tailwind v4) in frontend/package.json
+- [X] T003 [P] Add migration embed scaffold in internal/embed/embed.go
+- [X] T004 [P] Add backend config defaults for LISTEN_HOST/LISTEN_PORT in internal/server/config.go
 
 ---
 
@@ -35,13 +35,13 @@ description: "Task list for kanban and chat core"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Create project discovery and data directory initialization in internal/server/server.go
-- [ ] T006 Implement per-project SQLite connection management in internal/server/server.go
-- [ ] T007 Add embedded migration runner using golang-migrate in internal/server/server.go
-- [ ] T008 Create base SQL migrations for projects, boards, columns, tasks, chat threads, chat messages in internal/embed/migrations/001_init.sql
-- [ ] T009 Seed default board, columns, and chat thread if empty in internal/server/server.go
-- [ ] T010 [P] Add data access helpers for board/task/chat queries in internal/server/repository.go
-- [ ] T011 [P] Wire API router base and middleware in internal/handlers/routes.go
+- [X] T005 Create project discovery and data directory initialization in internal/server/server.go
+- [X] T006 Implement per-project SQLite connection management in internal/server/server.go
+- [X] T007 Add embedded migration runner using golang-migrate in internal/server/server.go
+- [X] T008 Create base SQL migrations for projects, boards, columns, tasks, chat threads, chat messages in internal/embed/migrations/001_init.sql
+- [X] T009 Seed default board, columns, and chat thread if empty in internal/server/server.go
+- [X] T010 [P] Add data access helpers for board/task/chat queries in internal/server/repository.go
+- [X] T011 [P] Wire API router base and middleware in internal/handlers/routes.go
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -55,15 +55,15 @@ description: "Task list for kanban and chat core"
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Implement board read endpoint in internal/handlers/api.go (GET /projects/{projectId}/board)
-- [ ] T013 [P] [US1] Implement task create endpoint in internal/handlers/api.go (POST /projects/{projectId}/tasks)
-- [ ] T014 [P] [US1] Implement task update/move endpoint in internal/handlers/api.go (PATCH /projects/{projectId}/tasks/{taskId})
-- [ ] T015 [P] [US1] Add API client helpers for board/tasks in frontend/src/api.ts
-- [ ] T016 [US1] Build Kanban route and data loader in frontend/src/routes/kanban.tsx
-- [ ] T017 [US1] Implement Kanban board UI with columns and task cards in frontend/src/components/kanban/Board.tsx
-- [ ] T018 [US1] Add create-task form and validation in frontend/src/components/kanban/CreateTask.tsx
-- [ ] T019 [US1] Implement drag-and-drop interactions and persistence in frontend/src/components/kanban/Board.tsx
-- [ ] T020 [US1] Persist task ordering and column placement updates via API in frontend/src/components/kanban/Board.tsx
+- [X] T012 [P] [US1] Implement board read endpoint in internal/handlers/api.go (GET /projects/{projectId}/board)
+- [X] T013 [P] [US1] Implement task create endpoint in internal/handlers/api.go (POST /projects/{projectId}/tasks)
+- [X] T014 [P] [US1] Implement task update/move endpoint in internal/handlers/api.go (PATCH /projects/{projectId}/tasks/{taskId})
+- [X] T015 [P] [US1] Add API client helpers for board/tasks in frontend/src/api.ts
+- [X] T016 [US1] Build Kanban route and data loader in frontend/src/routes/kanban.tsx
+- [X] T017 [US1] Implement Kanban board UI with columns and task cards in frontend/src/components/kanban/Board.tsx
+- [X] T018 [US1] Add create-task form and validation in frontend/src/components/kanban/NewTaskForm.tsx
+- [X] T019 [US1] Implement drag-and-drop interactions and persistence in frontend/src/components/kanban/Board.tsx
+- [X] T020 [US1] Persist task ordering and column placement updates via API in frontend/src/components/kanban/Board.tsx
 
 **Checkpoint**: User Story 1 is fully functional and independently testable
 
@@ -77,10 +77,10 @@ description: "Task list for kanban and chat core"
 
 ### Implementation for User Story 2
 
-- [ ] T021 [P] [US2] Create app shell layout with sidebar in frontend/src/layouts/AppShell.tsx
-- [ ] T022 [P] [US2] Define routes for Kanban, Chat, and placeholders in frontend/src/main.tsx
-- [ ] T023 [US2] Implement placeholder pages in frontend/src/routes/placeholders.tsx
-- [ ] T024 [US2] Style sidebar and active state in frontend/src/styles.css
+- [X] T021 [P] [US2] Create app shell layout with sidebar in frontend/src/layouts/AppShell.tsx
+- [X] T022 [P] [US2] Define routes for Kanban, Chat, and placeholders in frontend/src/main.tsx
+- [X] T023 [US2] Implement placeholder pages in frontend/src/routes/placeholders.tsx
+- [X] T024 [US2] Style sidebar and active state in frontend/src/styles.css
 
 **Checkpoint**: User Story 2 is fully functional and independently testable
 
@@ -94,12 +94,12 @@ description: "Task list for kanban and chat core"
 
 ### Implementation for User Story 3
 
-- [ ] T025 [P] [US3] Implement chat list endpoint in internal/handlers/api.go (GET /projects/{projectId}/chat)
-- [ ] T026 [P] [US3] Implement chat create endpoint with informational response in internal/handlers/api.go (POST /projects/{projectId}/chat)
-- [ ] T027 [P] [US3] Add API client helpers for chat in frontend/src/api.ts
-- [ ] T028 [US3] Build Chat route and data loader in frontend/src/routes/chat.tsx
-- [ ] T029 [US3] Implement chat timeline UI in frontend/src/components/chat/ChatTimeline.tsx
-- [ ] T030 [US3] Implement chat input and send flow with validation in frontend/src/components/chat/ChatInput.tsx
+- [X] T025 [P] [US3] Implement chat list endpoint in internal/handlers/api.go (GET /projects/{projectId}/chat)
+- [X] T026 [P] [US3] Implement chat create endpoint with informational response in internal/handlers/api.go (POST /projects/{projectId}/chat)
+- [X] T027 [P] [US3] Add API client helpers for chat in frontend/src/api.ts
+- [X] T028 [US3] Build Chat route and data loader in frontend/src/routes/chat.tsx
+- [X] T029 [US3] Implement chat timeline UI in frontend/src/components/chat/ChatTimeline.tsx
+- [X] T030 [US3] Implement chat input and send flow with validation in frontend/src/components/chat/ChatComposer.tsx
 
 **Checkpoint**: User Story 3 is fully functional and independently testable
 
@@ -109,9 +109,9 @@ description: "Task list for kanban and chat core"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T031 [P] Add light/dark theme toggle and persistence in frontend/src/components/ThemeToggle.tsx
-- [ ] T032 Update global styles and layout polish in frontend/src/styles.css
-- [ ] T033 Validate quickstart steps and update docs if needed in specs/001-kanban-chat-core/quickstart.md
+- [X] T031 [P] Add light/dark theme toggle and persistence in frontend/src/components/ThemeToggle.tsx
+- [X] T032 Update global styles and layout polish in frontend/src/styles.css
+- [X] T033 Validate quickstart steps and update docs if needed in specs/001-kanban-chat-core/quickstart.md
 
 ---
 

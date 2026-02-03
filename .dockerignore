@@ -1,0 +1,12 @@
+node_modules/
+frontend/node_modules/
+internal/embed/frontend/dist/
+.git/
+Dockerfile
+Dockerfile*
+.dockerignore
+*.log*
+.env*
+coverage/
+.vscode/
+.idea/

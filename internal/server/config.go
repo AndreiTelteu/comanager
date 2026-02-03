@@ -5,6 +5,7 @@ import "os"
 const (
 	defaultListenHost = "0.0.0.0"
 	defaultListenPort = "8080"
+	defaultDataDir    = "/app/data"
 )
 
 func ListenAddress() string {
@@ -12,6 +13,10 @@ func ListenAddress() string {
 	port := getenv("LISTEN_PORT", defaultListenPort)
 
 	return host + ":" + port
+}
+
+func DataDir() string {
+	return getenv("DATA_DIR", defaultDataDir)
 }
 
 func getenv(key, fallback string) string {

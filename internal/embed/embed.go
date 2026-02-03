@@ -9,6 +9,9 @@ import (
 //go:embed frontend/dist/**
 var assets embed.FS
 
+//go:embed migrations/*.sql
+var migrations embed.FS
+
 func AssetFS() (fs.FS, error) {
 	sub, err := fs.Sub(assets, "frontend/dist")
 	if err != nil {
@@ -16,4 +19,8 @@ func AssetFS() (fs.FS, error) {
 	}
 
 	return sub, nil
+}
+
+func MigrationsFS() fs.FS {
+	return migrations
 }

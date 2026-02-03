@@ -1,214 +1,89 @@
 import { render } from 'solid-js/web';
 import 'solid-devtools';
 import {
-  ErrorComponent,
   Link,
-  Outlet,
+  Navigate,
   RouterProvider,
   createRootRoute,
   createRoute,
   createRouter,
 } from '@tanstack/solid-router';
-import { NotFoundError, fetchPost, fetchPosts } from './posts';
-import type { ErrorComponentProps } from '@tanstack/solid-router';
 import './styles.css';
 import { TanStackRouterDevtools } from '@tanstack/solid-router-devtools';
+import { AppShell } from './layouts/AppShell';
+import { createKanbanRoute } from './routes/kanban';
+import { createChatRoute } from './routes/chat';
+import { createPlaceholderRoute } from './routes/placeholders';
 
 const rootRoute = createRootRoute({
   component: RootComponent,
-  notFoundComponent: () => {
-    return (
+  notFoundComponent: () => (
+    <div class="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200">
       <div>
-        <p>This is the notFoundComponent configured on root route</p>
-        <Link to="/">Start Over</Link>
+        <h2 class="text-xl font-semibold">Page not found</h2>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          We couldn&apos;t find that page. Head back to the kanban board.
+        </p>
       </div>
-    );
-  },
+      <Link
+        to="/kanban"
+        class="inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white dark:bg-white dark:text-gray-900"
+      >
+        Go to Kanban
+      </Link>
+    </div>
+  ),
 });
 
 function RootComponent() {
   return (
     <>
-      <div class="p-2 flex gap-2 text-lg border-b">
-        <Link
-          to="/"
-          activeProps={{
-            class: 'font-bold',
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>{' '}
-        <Link
-          to="/posts"
-          activeProps={{
-            class: 'font-bold',
-          }}
-        >
-          Posts
-        </Link>{' '}
-        <Link
-          to="/layout-a"
-          activeProps={{
-            class: 'font-bold',
-          }}
-        >
-          Layout
-        </Link>{' '}
-        <Link
-          // @ts-expect-error
-          to="/this-route-does-not-exist"
-          activeProps={{
-            class: 'font-bold',
-          }}
-        >
-          This Route Does Not Exist
-        </Link>
-      </div>
-      <Outlet />
+      <AppShell />
       <TanStackRouterDevtools position="bottom-right" />
     </>
   );
 }
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: IndexComponent,
+  component: () => <Navigate to="/kanban" />,
 });
 
-function IndexComponent() {
-  return (
-    <div class="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
-  );
-}
-
-export const postsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'posts',
-  loader: () => fetchPosts(),
-}).lazy(() => import('./posts.lazy').then((d) => d.Route));
-
-const postsIndexRoute = createRoute({
-  getParentRoute: () => postsRoute,
-  path: '/',
-  component: PostsIndexComponent,
+const kanbanRoute = createKanbanRoute(rootRoute);
+const chatRoute = createChatRoute(rootRoute);
+const specificationsRoute = createPlaceholderRoute(rootRoute, 'specifications', {
+  title: 'Specifications',
+  description: 'This page is not implemented yet.',
 });
-
-function PostsIndexComponent() {
-  return <div>Select a post.</div>;
-}
-
-const postRoute = createRoute({
-  getParentRoute: () => postsRoute,
-  path: '$postId',
-  errorComponent: PostErrorComponent,
-  loader: ({ params }) => fetchPost(params.postId),
-  component: PostComponent,
+const environmentRoute = createPlaceholderRoute(rootRoute, 'environment', {
+  title: 'Environment',
+  description: 'This page is not implemented yet.',
 });
-
-function PostErrorComponent({ error }: ErrorComponentProps) {
-  if (error instanceof NotFoundError) {
-    return <div>{error.message}</div>;
-  }
-
-  return <ErrorComponent error={error} />;
-}
-
-function PostComponent() {
-  const post = postRoute.useLoaderData();
-
-  return (
-    <div class="space-y-2">
-      <h4 class="text-xl font-bold">{post().title}</h4>
-      <hr class="opacity-20" />
-      <div class="text-sm">{post().body}</div>
-    </div>
-  );
-}
-
-const layoutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  id: '_layout',
-  component: LayoutComponent,
+const contextRoute = createPlaceholderRoute(rootRoute, 'context', {
+  title: 'Context',
+  description: 'This page is not implemented yet.',
 });
-
-function LayoutComponent() {
-  return (
-    <div class="p-2">
-      <div class="border-b">I'm a layout</div>
-      <div>
-        <Outlet />
-      </div>
-    </div>
-  );
-}
-
-const layout2Route = createRoute({
-  getParentRoute: () => layoutRoute,
-  id: '_layout-2',
-  component: Layout2Component,
+const memoryRoute = createPlaceholderRoute(rootRoute, 'memory', {
+  title: 'Memory',
+  description: 'This page is not implemented yet.',
 });
-
-function Layout2Component() {
-  return (
-    <div>
-      <div>I'm a nested layout</div>
-      <div class="flex gap-2 border-b">
-        <Link
-          to="/layout-a"
-          activeProps={{
-            class: 'font-bold',
-          }}
-        >
-          Layout A
-        </Link>
-        <Link
-          to="/layout-b"
-          activeProps={{
-            class: 'font-bold',
-          }}
-        >
-          Layout B
-        </Link>
-      </div>
-      <div>
-        <Outlet />
-      </div>
-    </div>
-  );
-}
-
-const layoutARoute = createRoute({
-  getParentRoute: () => layout2Route,
-  path: '/layout-a',
-  component: LayoutAComponent,
+const settingsRoute = createPlaceholderRoute(rootRoute, 'settings', {
+  title: 'Settings',
+  description: 'This page is not implemented yet.',
 });
-
-function LayoutAComponent() {
-  return <div>I'm layout A!</div>;
-}
-
-const layoutBRoute = createRoute({
-  getParentRoute: () => layout2Route,
-  path: '/layout-b',
-  component: LayoutBComponent,
-});
-
-function LayoutBComponent() {
-  return <div>I'm layout B!</div>;
-}
 
 const routeTree = rootRoute.addChildren([
-  postsRoute.addChildren([postRoute, postsIndexRoute]),
-  layoutRoute.addChildren([
-    layout2Route.addChildren([layoutARoute, layoutBRoute]),
-  ]),
   indexRoute,
+  kanbanRoute,
+  chatRoute,
+  specificationsRoute,
+  environmentRoute,
+  contextRoute,
+  memoryRoute,
+  settingsRoute,
 ]);
 
-// Set up a Router instance
 const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
@@ -216,7 +91,6 @@ const router = createRouter({
   scrollRestoration: true,
 });
 
-// Register things for typesafety
 declare module '@tanstack/solid-router' {
   interface Register {
     router: typeof router;
