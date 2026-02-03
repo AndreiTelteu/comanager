@@ -1,0 +1,254 @@
+openapi: 3.0.3
+info:
+  title: Comanager API
+  version: 0.1.0
+servers:
+  - url: /api
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /projects:
+    get:
+      summary: List projects
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+  /projects/{projectId}:
+    get:
+      summary: Get project details
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+  /projects/{projectId}/board:
+    get:
+      summary: Get board with columns and tasks
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+  /projects/{projectId}/tasks:
+    post:
+      summary: Create a task in a column
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+  /projects/{projectId}/tasks/{taskId}:
+    patch:
+      summary: Move or update task
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+  /projects/{projectId}/chat:
+    get:
+      summary: Get chat messages
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessage'
+    post:
+      summary: Send a chat message
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessageRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rootPath:
+          type: string
+        dataPath:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, name, rootPath, dataPath, createdAt, updatedAt]
+    Board:
+      type: object
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        name:
+          type: string
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Column'
+      required: [id, projectId, name, columns]
+    Column:
+      type: object
+      properties:
+        id:
+          type: string
+        boardId:
+          type: string
+        name:
+          type: string
+        orderIndex:
+          type: integer
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+      required: [id, boardId, name, orderIndex, tasks]
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        columnId:
+          type: string
+        title:
+          type: string
+        orderIndex:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, columnId, title, orderIndex, createdAt, updatedAt]
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+        threadId:
+          type: string
+        role:
+          type: string
+          enum: [user, system]
+        content:
+          type: string
+        isInformational:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, threadId, role, content, isInformational, createdAt]
+    CreateTaskRequest:
+      type: object
+      properties:
+        columnId:
+          type: string
+        title:
+          type: string
+      required: [columnId, title]
+    UpdateTaskRequest:
+      type: object
+      properties:
+        columnId:
+          type: string
+        orderIndex:
+          type: integer
+        title:
+          type: string
+    CreateChatMessageRequest:
+      type: object
+      properties:
+        content:
+          type: string
+      required: [content]

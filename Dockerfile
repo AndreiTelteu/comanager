@@ -11,7 +11,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . ./
 COPY --from=frontend /app/internal/embed/frontend/dist ./internal/embed/frontend/dist
-RUN CGO_ENABLED=0 go build -o /app/bin/server ./cmd/server
+RUN go build -o /app/bin/server ./cmd/server
 
 FROM ubuntu:22.04
 RUN apt-get update \
