@@ -6,18 +6,24 @@ services:
     environment:
       LISTEN_HOST: 0.0.0.0
       LISTEN_PORT: 8080
+      GOMODCACHE: /go/pkg/mod
+      GOCACHE: /go/cache
     volumes:
       - .:/app
       - ./data:/app/data
       - ./projects:/app/projects
+      - go-cache:/go
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - "8080:8080"
   frontend:
-    image: node:20-bullseye
+    image: oven/bun:1
     working_dir: /app/frontend
     command: sh -c "bun install && bun run dev -- --host 0.0.0.0 --port 3000"
     volumes:
       - ./frontend:/app/frontend
     ports:
       - "3000:3000"
+
+volumes:
+  go-cache:
