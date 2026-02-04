@@ -58,12 +58,13 @@ export const createKanbanRoute = (parentRoute: AnyRoute) =>
   });
 
 function KanbanRouteComponent() {
-  const params = useParams();
+  const params = useParams({ strict: false });
+  const projectSlug = () => params()?.projectSlug;
   const [columns, setColumns] = createSignal<Column[]>([]);
   const [loadError, setLoadError] = createSignal<string>('');
 
   const [boardResult, { refetch }] = createResource(
-    () => params.projectSlug,
+    () => projectSlug(),
     getBoard,
   );
 
@@ -91,7 +92,7 @@ function KanbanRouteComponent() {
         toColumnId,
       );
       if (moved && nextOrderIndex !== undefined) {
-        updateTask(params.projectSlug, taskId, {
+        updateTask(projectSlug(), taskId, {
           columnId: toColumnId,
           orderIndex: nextOrderIndex,
         }).catch(() => {
@@ -111,7 +112,7 @@ function KanbanRouteComponent() {
     }
 
     try {
-      const created = await createTask(params.projectSlug, {
+      const created = await createTask(projectSlug(), {
         columnId: firstColumn.id,
         title,
       });

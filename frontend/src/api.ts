@@ -89,19 +89,19 @@ export const getProjectBySlug = async (
   return MOCK_PROJECTS.find((project) => project.slug === slug);
 };
 
-export const getBoard = async (projectSlug: string): Promise<Board> =>
+export const getBoard = async (projectSlug?: string): Promise<Board> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectSlug}/board`, {
+    await fetch(`${API_BASE}/projects/${projectSlug ?? ''}/board`, {
       headers: { Accept: 'application/json' },
     }),
   );
 
 export const createTask = async (
-  projectSlug: string,
+  projectSlug?: string,
   payload: { columnId: string; title: string },
 ): Promise<Task> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectSlug}/tasks`, {
+    await fetch(`${API_BASE}/projects/${projectSlug ?? ''}/tasks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -109,12 +109,12 @@ export const createTask = async (
   );
 
 export const updateTask = async (
-  projectSlug: string,
+  projectSlug?: string,
   taskId: string,
   payload: { columnId?: string; orderIndex?: number; title?: string },
 ): Promise<Task> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectSlug}/tasks/${taskId}`, {
+    await fetch(`${API_BASE}/projects/${projectSlug ?? ''}/tasks/${taskId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -122,20 +122,20 @@ export const updateTask = async (
   );
 
 export const getChatMessages = async (
-  projectSlug: string,
+  projectSlug?: string,
 ): Promise<ChatMessage[]> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectSlug}/chat`, {
+    await fetch(`${API_BASE}/projects/${projectSlug ?? ''}/chat`, {
       headers: { Accept: 'application/json' },
     }),
   );
 
 export const sendChatMessage = async (
-  projectSlug: string,
+  projectSlug?: string,
   content: string,
 ): Promise<ChatMessage> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectSlug}/chat`, {
+    await fetch(`${API_BASE}/projects/${projectSlug ?? ''}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content }),

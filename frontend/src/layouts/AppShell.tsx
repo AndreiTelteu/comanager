@@ -14,14 +14,15 @@ const navItems = [
 ];
 
 export function AppShell() {
-  const params = useParams();
+  const params = useParams({ strict: false });
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isProjectRoute = () => !!params.projectSlug;
+  const projectSlug = () => params()?.projectSlug;
+  const isProjectRoute = () => !!projectSlug();
   const isRootRoute = () => location.pathname === '/';
 
-  const [project] = createResource(() => params.projectSlug, getProjectBySlug);
+  const [project] = createResource(() => projectSlug(), getProjectBySlug);
 
   return (
     <div class="min-h-screen bg-gray-50 text-gray-950 dark:bg-gray-950 dark:text-gray-100">
@@ -60,7 +61,7 @@ export function AppShell() {
               {navItems.map((item) => (
                 <Link
                   class="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
-                  to={`/${params.projectSlug}/${item.to}`}
+                  to={`/${projectSlug()}/${item.to}`}
                   activeProps={{
                     class:
                       'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-gray-900 bg-gray-100 dark:bg-gray-800 dark:text-white',

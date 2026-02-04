@@ -2,6 +2,7 @@ import { render } from 'solid-js/web';
 import 'solid-devtools';
 import {
   Link,
+  Outlet,
   RouterProvider,
   createRootRoute,
   createRoute,
@@ -38,7 +39,7 @@ const rootRoute = createRootRoute({
 function RootComponent() {
   return (
     <>
-      <AppShell />
+      <Outlet />
       <TanStackRouterDevtools position="bottom-right" />
     </>
   );
@@ -49,6 +50,7 @@ const projectsRoute = createProjectsRoute(rootRoute);
 const projectRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '$projectSlug',
+  component: AppShell,
 });
 
 const kanbanRoute = createKanbanRoute(projectRoute);
@@ -92,6 +94,9 @@ const router = createRouter({
   defaultPreload: 'intent',
   defaultStaleTime: 5000,
   scrollRestoration: true,
+  defaultOnCatch: (error) => {
+    console.error(error);
+  },
 });
 
 declare module '@tanstack/solid-router' {

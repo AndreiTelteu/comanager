@@ -14,7 +14,8 @@ export const createChatRoute = (parentRoute: AnyRoute) =>
   });
 
 function ChatRouteComponent() {
-  const params = useParams();
+  const params = useParams({ strict: false });
+  const projectSlug = () => params()?.projectSlug;
   const [messages, setMessages] = createSignal<ChatMessage[]>([]);
   const [error, setError] = createSignal('');
   const conversations = [
@@ -39,7 +40,7 @@ function ChatRouteComponent() {
   ];
 
   const [chatResult, { refetch }] = createResource(
-    () => params.projectSlug,
+    () => projectSlug(),
     getChatMessages,
   );
 
@@ -66,7 +67,7 @@ function ChatRouteComponent() {
     setError('');
 
     try {
-      const systemMessage = await sendChatMessage(params.projectSlug, message);
+      const systemMessage = await sendChatMessage(projectSlug(), message);
       setMessages((current) => [...current, systemMessage]);
     } catch {
       setError('Unable to send message. Please try again.');

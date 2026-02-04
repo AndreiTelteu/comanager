@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/andreitelteu/comanager/internal/embed"
 	"github.com/andreitelteu/comanager/internal/handlers"
@@ -37,6 +38,21 @@ func (store *ProjectStore) Get(projectID string) (*Project, bool) {
 	return project, ok
 }
 
+func (store *ProjectStore) GetOrCreate(projectID string) (*Project, error) {
+	if project, ok := store.Projects[projectID]; ok {
+		return project, nil
+	}
+	if !isValidProjectID(projectID) {
+		return nil, fmt.Errorf("invalid project id")
+	}
+	project, err := store.createProject(projectID)
+	if err != nil {
+		return nil, err
+	}
+	store.Projects[projectID] = project
+	return project, nil
+}
+
 func (store *ProjectStore) List() []*Project {
 	projects := make([]*Project, 0, len(store.Projects))
 	for _, project := range store.Projects {
@@ -60,8 +76,8 @@ func New() (*fiber.App, error) {
 
 	app.Use(func(c *fiber.Ctx) error {
 		c.Locals("projectRepoLookup", handlers.ProjectRepoLookup(func(projectID string) (*repository.Repository, bool) {
-			project, ok := store.Get(projectID)
-			if !ok {
+			project, err := store.GetOrCreate(projectID)
+			if err != nil || project == nil {
 				return nil, false
 			}
 			return project.Repo, true
@@ -94,34 +110,11 @@ func InitializeProjects(dataDir string) (*ProjectStore, error) {
 	}
 
 	for _, projectID := range projectIDs {
-		projectPath := filepath.Join(dataDir, projectID)
-		attachmentsPath := filepath.Join(projectPath, "attachments")
-		if err := os.MkdirAll(attachmentsPath, 0o755); err != nil {
-			return nil, err
-		}
-
-		dbPath := filepath.Join(projectPath, "project.db")
-		db, err := openProjectDB(dbPath)
+		project, err := store.createProject(projectID)
 		if err != nil {
 			return nil, err
 		}
-
-		if err := runMigrations(db); err != nil {
-			return nil, err
-		}
-
-		repo := repository.NewRepository(db, projectID)
-		if err := repo.EnsureDefaults(context.Background()); err != nil {
-			return nil, err
-		}
-
-		store.Projects[projectID] = &Project{
-			ID:     projectID,
-			Path:   projectPath,
-			DBPath: dbPath,
-			DB:     db,
-			Repo:   repo,
-		}
+		store.Projects[projectID] = project
 	}
 
 	return store, nil
@@ -147,6 +140,45 @@ func discoverProjectIDs(dataDir string) ([]string, error) {
 
 	sort.Strings(projectIDs)
 	return projectIDs, nil
+}
+
+func (store *ProjectStore) createProject(projectID string) (*Project, error) {
+	projectPath := filepath.Join(store.DataDir, projectID)
+	attachmentsPath := filepath.Join(projectPath, "attachments")
+	if err := os.MkdirAll(attachmentsPath, 0o755); err != nil {
+		return nil, err
+	}
+
+	dbPath := filepath.Join(projectPath, "project.db")
+	db, err := openProjectDB(dbPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := runMigrations(db); err != nil {
+		return nil, err
+	}
+
+	repo := repository.NewRepository(db, projectID)
+	if err := repo.EnsureDefaults(context.Background()); err != nil {
+		return nil, err
+	}
+
+	return &Project{
+		ID:     projectID,
+		Path:   projectPath,
+		DBPath: dbPath,
+		DB:     db,
+		Repo:   repo,
+	}, nil
+}
+
+func isValidProjectID(projectID string) bool {
+	projectID = strings.TrimSpace(projectID)
+	if projectID == "" || projectID == "." || projectID == ".." {
+		return false
+	}
+	return !strings.ContainsAny(projectID, "/\\")
 }
 
 func openProjectDB(dbPath string) (*sql.DB, error) {
