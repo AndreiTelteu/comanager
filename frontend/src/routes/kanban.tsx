@@ -1,7 +1,7 @@
 import { Show, createEffect, createResource, createSignal } from 'solid-js';
-import { createRoute } from '@tanstack/solid-router';
+import { createRoute, useParams } from '@tanstack/solid-router';
 import type { AnyRoute } from '@tanstack/solid-router';
-import { DEFAULT_PROJECT_ID, createTask, getBoard, updateTask } from '../api';
+import { createTask, getBoard, updateTask } from '../api';
 import type { Column, Task } from '../api';
 import { KanbanBoard } from '../components/kanban/Board';
 import { NewTaskForm } from '../components/kanban/NewTaskForm';
@@ -58,11 +58,12 @@ export const createKanbanRoute = (parentRoute: AnyRoute) =>
   });
 
 function KanbanRouteComponent() {
+  const params = useParams();
   const [columns, setColumns] = createSignal<Column[]>([]);
   const [loadError, setLoadError] = createSignal<string>('');
 
   const [boardResult, { refetch }] = createResource(
-    () => DEFAULT_PROJECT_ID,
+    () => params.projectSlug,
     getBoard,
   );
 
@@ -90,7 +91,7 @@ function KanbanRouteComponent() {
         toColumnId,
       );
       if (moved && nextOrderIndex !== undefined) {
-        updateTask(DEFAULT_PROJECT_ID, taskId, {
+        updateTask(params.projectSlug, taskId, {
           columnId: toColumnId,
           orderIndex: nextOrderIndex,
         }).catch(() => {
@@ -110,7 +111,7 @@ function KanbanRouteComponent() {
     }
 
     try {
-      const created = await createTask(DEFAULT_PROJECT_ID, {
+      const created = await createTask(params.projectSlug, {
         columnId: firstColumn.id,
         title,
       });

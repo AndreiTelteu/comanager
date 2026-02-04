@@ -1,6 +1,38 @@
 const API_BASE = '/api';
 
-export const DEFAULT_PROJECT_ID = 'default';
+export type Project = {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: string;
+};
+
+export const MOCK_PROJECTS: Project[] = [
+  {
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    name: 'Comanager Core',
+    slug: 'comanager-core',
+    createdAt: '2026-01-15T10:00:00Z',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    name: 'Marketing Website Redesign',
+    slug: 'marketing-website',
+    createdAt: '2026-01-20T14:30:00Z',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440003',
+    name: 'Mobile App MVP',
+    slug: 'mobile-app-mvp',
+    createdAt: '2026-02-01T09:15:00Z',
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440004',
+    name: 'Customer Portal v2',
+    slug: 'customer-portal-v2',
+    createdAt: '2026-02-03T11:45:00Z',
+  },
+];
 
 export type Task = {
   id: string;
@@ -42,19 +74,34 @@ const handleJson = async <T,>(response: Response): Promise<T> => {
   return (await response.json()) as T;
 };
 
-export const getBoard = async (projectId = DEFAULT_PROJECT_ID): Promise<Board> =>
+export const getProjects = async (): Promise<Project[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  return [...MOCK_PROJECTS];
+};
+
+export const getProjectBySlug = async (
+  slug?: string,
+): Promise<Project | undefined> => {
+  if (!slug) {
+    return undefined;
+  }
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  return MOCK_PROJECTS.find((project) => project.slug === slug);
+};
+
+export const getBoard = async (projectSlug: string): Promise<Board> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectId}/board`, {
+    await fetch(`${API_BASE}/projects/${projectSlug}/board`, {
       headers: { Accept: 'application/json' },
     }),
   );
 
 export const createTask = async (
-  projectId: string,
+  projectSlug: string,
   payload: { columnId: string; title: string },
 ): Promise<Task> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectId}/tasks`, {
+    await fetch(`${API_BASE}/projects/${projectSlug}/tasks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -62,12 +109,12 @@ export const createTask = async (
   );
 
 export const updateTask = async (
-  projectId: string,
+  projectSlug: string,
   taskId: string,
   payload: { columnId?: string; orderIndex?: number; title?: string },
 ): Promise<Task> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectId}/tasks/${taskId}`, {
+    await fetch(`${API_BASE}/projects/${projectSlug}/tasks/${taskId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -75,20 +122,20 @@ export const updateTask = async (
   );
 
 export const getChatMessages = async (
-  projectId = DEFAULT_PROJECT_ID,
+  projectSlug: string,
 ): Promise<ChatMessage[]> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectId}/chat`, {
+    await fetch(`${API_BASE}/projects/${projectSlug}/chat`, {
       headers: { Accept: 'application/json' },
     }),
   );
 
 export const sendChatMessage = async (
-  projectId: string,
+  projectSlug: string,
   content: string,
 ): Promise<ChatMessage> =>
   handleJson(
-    await fetch(`${API_BASE}/projects/${projectId}/chat`, {
+    await fetch(`${API_BASE}/projects/${projectSlug}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content }),

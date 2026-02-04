@@ -1,7 +1,7 @@
 import { Show, createEffect, createResource, createSignal } from 'solid-js';
-import { createRoute } from '@tanstack/solid-router';
+import { createRoute, useParams } from '@tanstack/solid-router';
 import type { AnyRoute } from '@tanstack/solid-router';
-import { DEFAULT_PROJECT_ID, getChatMessages, sendChatMessage } from '../api';
+import { getChatMessages, sendChatMessage } from '../api';
 import type { ChatMessage } from '../api';
 import { ChatTimeline } from '../components/chat/ChatTimeline';
 import { ChatComposer } from '../components/chat/ChatComposer';
@@ -14,6 +14,7 @@ export const createChatRoute = (parentRoute: AnyRoute) =>
   });
 
 function ChatRouteComponent() {
+  const params = useParams();
   const [messages, setMessages] = createSignal<ChatMessage[]>([]);
   const [error, setError] = createSignal('');
   const conversations = [
@@ -38,7 +39,7 @@ function ChatRouteComponent() {
   ];
 
   const [chatResult, { refetch }] = createResource(
-    () => DEFAULT_PROJECT_ID,
+    () => params.projectSlug,
     getChatMessages,
   );
 
@@ -65,7 +66,7 @@ function ChatRouteComponent() {
     setError('');
 
     try {
-      const systemMessage = await sendChatMessage(DEFAULT_PROJECT_ID, message);
+      const systemMessage = await sendChatMessage(params.projectSlug, message);
       setMessages((current) => [...current, systemMessage]);
     } catch {
       setError('Unable to send message. Please try again.');

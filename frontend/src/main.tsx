@@ -2,7 +2,6 @@ import { render } from 'solid-js/web';
 import 'solid-devtools';
 import {
   Link,
-  Navigate,
   RouterProvider,
   createRootRoute,
   createRoute,
@@ -14,6 +13,7 @@ import { AppShell } from './layouts/AppShell';
 import { createKanbanRoute } from './routes/kanban';
 import { createChatRoute } from './routes/chat';
 import { createPlaceholderRoute } from './routes/placeholders';
+import { createProjectsRoute } from './routes/projects';
 
 const rootRoute = createRootRoute({
   component: RootComponent,
@@ -22,14 +22,14 @@ const rootRoute = createRootRoute({
       <div>
         <h2 class="text-xl font-semibold">Page not found</h2>
         <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          We couldn&apos;t find that page. Head back to the kanban board.
+          We couldn&apos;t find that page. Head back to the projects overview.
         </p>
       </div>
       <Link
-        to="/kanban"
+        to="/"
         class="inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white dark:bg-white dark:text-gray-900"
       >
-        Go to Kanban
+        Go to Projects
       </Link>
     </div>
   ),
@@ -44,44 +44,47 @@ function RootComponent() {
   );
 }
 
-const indexRoute = createRoute({
+const projectsRoute = createProjectsRoute(rootRoute);
+
+const projectRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
-  component: () => <Navigate to="/kanban" />,
+  path: '$projectSlug',
 });
 
-const kanbanRoute = createKanbanRoute(rootRoute);
-const chatRoute = createChatRoute(rootRoute);
-const specificationsRoute = createPlaceholderRoute(rootRoute, 'specifications', {
+const kanbanRoute = createKanbanRoute(projectRoute);
+const chatRoute = createChatRoute(projectRoute);
+const specificationsRoute = createPlaceholderRoute(projectRoute, 'specifications', {
   title: 'Specifications',
   description: 'This page is not implemented yet.',
 });
-const environmentRoute = createPlaceholderRoute(rootRoute, 'environment', {
+const environmentRoute = createPlaceholderRoute(projectRoute, 'environment', {
   title: 'Environment',
   description: 'This page is not implemented yet.',
 });
-const contextRoute = createPlaceholderRoute(rootRoute, 'context', {
+const contextRoute = createPlaceholderRoute(projectRoute, 'context', {
   title: 'Context',
   description: 'This page is not implemented yet.',
 });
-const memoryRoute = createPlaceholderRoute(rootRoute, 'memory', {
+const memoryRoute = createPlaceholderRoute(projectRoute, 'memory', {
   title: 'Memory',
   description: 'This page is not implemented yet.',
 });
-const settingsRoute = createPlaceholderRoute(rootRoute, 'settings', {
+const settingsRoute = createPlaceholderRoute(projectRoute, 'settings', {
   title: 'Settings',
   description: 'This page is not implemented yet.',
 });
 
 const routeTree = rootRoute.addChildren([
-  indexRoute,
-  kanbanRoute,
-  chatRoute,
-  specificationsRoute,
-  environmentRoute,
-  contextRoute,
-  memoryRoute,
-  settingsRoute,
+  projectsRoute,
+  projectRoute.addChildren([
+    kanbanRoute,
+    chatRoute,
+    specificationsRoute,
+    environmentRoute,
+    contextRoute,
+    memoryRoute,
+    settingsRoute,
+  ]),
 ]);
 
 const router = createRouter({
