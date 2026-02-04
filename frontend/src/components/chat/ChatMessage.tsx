@@ -13,15 +13,15 @@ export function ChatMessage(props: ChatMessageProps) {
       }`}
     >
       <div
-        class={`max-w-[70%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+        class={`max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
           isUser()
             ? 'bg-blue-600 text-white'
-            : 'bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100'
+            : 'border border-gray-200 bg-white text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100'
         }`}
       >
         <div class="flex items-center justify-between gap-3">
           <p class="text-xs font-semibold opacity-70">
-            {isUser() ? 'You' : 'System'}
+            {isUser() ? 'You' : 'Assistant'}
           </p>
           {props.message.isInformational ? (
             <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-500/20 dark:text-amber-200">
